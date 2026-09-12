@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Drive</title> <!-- Título camuflado -->
+    <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; margin: 0; padding: 20px; }
+        input { width: 60%; padding: 12px; font-size: 16px; border-radius: 6px; border: 1px solid #333; }
+        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; border: none; background: #007bff; color: white; }
+        iframe { width: 100%; height: 85vh; border: none; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <h2>Navegador Privado</h2>
+    <form id="search-form">
+        <input type="text" id="url-input" placeholder="Digite uma URL ou busca...">
+        <button type="submit">Abrir</button>
+    </form>
+
+    <iframe id="proxy-frame"></iframe>
+
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/uv/uv.sw.js', { scope: '/uv/service/' });
+        }
+
+        const form = document.getElementById('search-form');
+        const input = document.getElementById('url-input');
+        const iframe = document.getElementById('proxy-frame');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let url = input.value.trim();
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+            }
+            iframe.src = '/uv/service/' + encodeURIComponent(url);
+            iframe.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
